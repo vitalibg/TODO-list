@@ -8,12 +8,14 @@ const TODO_HIGHLIGHT_TIME = 1000;
 const main = document.getElementById("root");
 const container = getElement("div", "container");
 const wrap = getElement("div", "wrap");
-
 main.append(container);
 container.append(wrap);
 
-const controlPanel = getElement("div", "control-panel");
-controlPanel.classList.add("panel");
+// Control panel
+const controlPanel = getElement("div", "panel");
+controlPanel.classList.add("control-panel");
+
+//'Delete All' button
 const deleteAllButton = getButton(DELETE_ALL_TEXT);
 deleteAllButton.addEventListener("click", (event) => {
   const todoList = event.target.parentElement.parentElement.children[2];
@@ -23,6 +25,8 @@ deleteAllButton.addEventListener("click", (event) => {
   updateToDoCount(event);
 });
 controlPanel.append(deleteAllButton);
+
+//'Delete Last' button
 const deleteLastButton = getButton(DELETE_LAST_TEXT);
 deleteLastButton.addEventListener("click", (event) => {
   const todoList = event.target.parentElement.parentElement.children[2];
@@ -30,9 +34,13 @@ deleteLastButton.addEventListener("click", (event) => {
   updateToDoCount(event);
 });
 controlPanel.append(deleteLastButton);
+
+//'EnterTodo' input field
 const enterToDoInput = getInput("Enter todo ...", "input");
 enterToDoInput.classList.add("enter-todo");
 controlPanel.append(enterToDoInput);
+
+//'Add' button*
 const addButton = getButton(ADD_TEXT);
 addButton.addEventListener("click", (event) => {
   todoContainer.append(getToDo(enterToDoInput.value));
@@ -43,12 +51,18 @@ controlPanel.append(addButton);
 
 const infoPanel = getElement("div", "info-panel");
 infoPanel.classList.add("panel");
+
+// 'All' label
 const allLabel = getElement("div", "all-label");
 allLabel.append(getLabel("All: 0"));
 infoPanel.append(allLabel);
+
+// 'Completed' label
 const completedLabel = getElement("div", "completed-label");
 completedLabel.append(getLabel("Completed: 0"));
 infoPanel.append(completedLabel);
+
+// 'Show All' button
 const showAllButton = getButton(SHOW_ALL_TEXT);
 showAllButton.addEventListener("click", (event) => {
   const allList = event.target.parentElement.parentElement.children[2].children;
@@ -62,6 +76,8 @@ showAllButton.addEventListener("click", (event) => {
   }
 });
 infoPanel.append(showAllButton);
+
+// 'Show completed' button
 const showCompletedButton = getButton(SHOW_COMPLETED_TEXT);
 showCompletedButton.addEventListener("click", (event) => {
   const completedList =
@@ -76,6 +92,8 @@ showCompletedButton.addEventListener("click", (event) => {
   }
 });
 infoPanel.append(showCompletedButton);
+
+// 'Search' input field
 const searchInput = getInput("Search ...", "input");
 searchInput.classList.add("search-todo");
 searchInput.addEventListener("keypress", (event) => {
@@ -96,16 +114,16 @@ searchInput.addEventListener("keypress", (event) => {
     event.target.value = "";
   }
 });
-infoPanel.append(searchInput);
 
+infoPanel.append(searchInput);
 wrap.append(controlPanel);
 wrap.append(infoPanel);
-
 const todoContainer = getElement("div", "todo-container");
-
 wrap.append(todoContainer);
 
+/*Create a new TODO*/
 function getToDo(todoText) {
+  // Checkbox
   const todo = getElement("div", "todo-wrap");
   const todoCheckboxWrap = getElement("div", "todo-checkbox-wrap");
   const todoCheckboxContainer = getElement("label", "todo-checkbox-container");
@@ -117,12 +135,14 @@ function getToDo(todoText) {
   todoCheckboxWrap.append(todoCheckboxContainer);
   todo.append(todoCheckboxWrap);
 
+  // Input field
   const todoInputContainer = getElement("div", "todo-input-container");
   const todoInput = getElement("div", "todo-input");
   todoInput.textContent = todoText;
   todoInputContainer.append(todoInput);
   todo.append(todoInputContainer);
 
+  // Close
   const todoCloseWrap = getElement("div", "todo-close-wrap");
   const todoCloseContainer = getElement("div", "todo-close-container");
   const todoClose = getElement("div", "todo-close");
@@ -135,30 +155,26 @@ function getToDo(todoText) {
       event.target.parentElement.parentElement.parentElement.parentElement
         .children.length - 1
     }`;
-    let completedElement =
-      event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-        0,
-      ).firstChild;
-    if (
-      event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
-        "completed",
-      ).length -
-        1 <=
-      0
-    ) {
-      completedElement.textContent = "Completed: 0";
-    }
-    completedElement.textContent = `Completed: ${
-      event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
-        "completed",
-      ).length - 1
-    }`;
-  });
-  todoCloseContainer.append(todoClose);
 
+    let completedCount =
+      event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
+        "todo-wrap completed",
+      ).length - 1;
+    if (completedCount >= 0) {
+      let completedElement =
+        event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
+          0,
+        );
+      completedElement.textContent = "Completed: " + completedCount;
+    }
+  });
+
+  todoCloseContainer.append(todoClose);
+  todoCloseWrap.append(todoCloseContainer);
+
+  // Date
   const todoDateContainer = getElement("div", "todo-date-container");
   todoDateContainer.textContent = getRefactorDate();
-  todoCloseWrap.append(todoCloseContainer);
   todoCloseWrap.append(todoDateContainer);
   todo.append(todoCloseWrap);
   todo.addEventListener("click", (event) => {
@@ -190,7 +206,7 @@ function getToDo(todoText) {
 
 function getRefactorDate() {
   let date = new Date();
-  let dateStr =
+  return (
     ("00" + (date.getMonth() + 1)).slice(-2) +
     "/" +
     ("00" + date.getDate()).slice(-2) +
@@ -201,8 +217,8 @@ function getRefactorDate() {
     ":" +
     ("00" + date.getMinutes()).slice(-2) +
     ":" +
-    ("00" + date.getSeconds()).slice(-2);
-  return dateStr;
+    ("00" + date.getSeconds()).slice(-2)
+  );
 }
 
 function getElement(tagName, className) {
