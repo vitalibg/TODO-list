@@ -1,52 +1,55 @@
-const rootId = document.getElementById("root");
+const DELETE_ALL_TEXT = "Delete All";
+const DELETE_LAST_TEXT = "Delete Last";
+const ADD_TEXT = "Add";
+const SHOW_ALL_TEXT = "Show All";
+const SHOW_COMPLETED_TEXT = "Show Completed";
+const TODO_HIGHLIGHT_TIME = 1000
+
+const main = document.getElementById("root");
 const container = getElement("div", "container");
 const wrap = getElement("div", "wrap");
 
-rootId.append(container);
+main.append(container);
 container.append(wrap);
 
-const controlPanel = getElement("div", "panel");
-controlPanel.classList.add("control-panel");
-const deleteAllButton = getButton("Delete All");
+const controlPanel = getElement("div", "control-panel");
+controlPanel.classList.add("panel");
+const deleteAllButton = getButton(DELETE_ALL_TEXT);
 deleteAllButton.addEventListener("click", (event) => {
-  if (event.target.textContent === "Delete All") {
-    const todo = event.target.parentElement.parentElement.children[2];
-    while (todo.firstChild) {
-      todo.removeChild(todo.firstChild);
-    }
+  const todoList = event.target.parentElement.parentElement.children[2];
+  while (todoList.firstChild) {
+    todoList.removeChild(todoList.firstChild);
   }
-  updateAllState(event);
+  updateToDoCount(event);
 });
 controlPanel.append(deleteAllButton);
-const deleteLast = getButton("Delete Last");
-deleteLast.addEventListener("click", (event) => {
-  if (event.target.textContent === "Delete Last") {
-    const todo = event.target.parentElement.parentElement.children[2];
-    todo.removeChild(todo.lastChild);
-  }
-  updateAllState(event);
+const deleteLastButton = getButton(DELETE_LAST_TEXT);
+deleteLastButton.addEventListener("click", (event) => {
+  const todoList = event.target.parentElement.parentElement.children[2];
+  todoList.removeChild(todoList.lastChild);
+  updateToDoCount(event);
 });
-controlPanel.append(deleteLast);
+controlPanel.append(deleteLastButton);
 const enterToDoInput = getInput("Enter todo ...", "input");
 enterToDoInput.classList.add("enter-todo");
 controlPanel.append(enterToDoInput);
-const addButton = getButton("Add");
+const addButton = getButton(ADD_TEXT);
 addButton.addEventListener("click", (event) => {
   todoContainer.append(getToDo(enterToDoInput.value));
   enterToDoInput.value = "";
-  updateAllState(event);
+  updateToDoCount(event);
 });
 controlPanel.append(addButton);
 
-const infoPanel = getElement("div", "panel");
-infoPanel.classList.add("info-panel");
+const infoPanel = getElement("div", "info-panel");
+infoPanel.classList.add("panel");
 const allLabel = getElement("div", "all-label");
 allLabel.append(getLabel("All: 0"));
 infoPanel.append(allLabel);
 const completedLabel = getElement("div", "completed-label");
 completedLabel.append(getLabel("Completed: 0"));
 infoPanel.append(completedLabel);
-const showAllButton = getButton("Show All");
+const showAllButton = getButton(SHOW_ALL_TEXT);
 showAllButton.addEventListener("click", (event) => {
   const allList = event.target.parentElement.parentElement.children[2].children;
   for (const todo of allList) {
@@ -56,10 +59,9 @@ showAllButton.addEventListener("click", (event) => {
     ) {
       todo.classList.remove("active");
     }
-  }
-});
+  }});
 infoPanel.append(showAllButton);
-const showCompletedButton = getButton("Show Completed");
+const showCompletedButton = getButton(SHOW_COMPLETED_TEXT);
 showCompletedButton.addEventListener("click", (event) => {
   const completedList =
     event.target.parentElement.parentElement.children[2].children;
@@ -76,18 +78,18 @@ infoPanel.append(showCompletedButton);
 const searchInput = getInput("Search ...", "input");
 searchInput.classList.add("search-todo");
 searchInput.addEventListener("keypress", (event) => {
-  const searchValue = event.target.value.toString();
-  if (event.keyCode === 13 || event.key === "Enter") {
-    const targetToDo =
+  const searchToDo = event.target.value.toString();
+  if (event.key === "Enter") {
+    const todoList =
       event.target.parentElement.parentElement.children[2].getElementsByClassName(
-        "todo-center__input",
+        "todo-input",
       );
-    for (const todo of targetToDo) {
-      if (todo.textContent === searchValue) {
+    for (const todo of todoList) {
+      if (todo.textContent === searchToDo) {
         todo.parentElement.parentElement.classList.toggle("search");
         setTimeout(() => {
           todo.parentElement.parentElement.classList.toggle("search");
-        }, 1000);
+        }, TODO_HIGHLIGHT_TIME);
       }
     }
     event.target.value = "";
@@ -103,92 +105,60 @@ const todoContainer = getElement("div", "todo-container");
 wrap.append(todoContainer);
 
 function getToDo(todoText) {
-  const todoItem = getElement("div", "todo-wrap");
-  const todoItemLeft = getElement("div", "todo-left");
-  const todoCheckboxContainer = getElement(
-    "label",
-    "todo-left__checkbox-container",
-  );
-  const todoCheckboxInput = getElement("input", "todo-left__checkbox");
-  todoCheckboxInput.setAttribute("type", "checkbox");
-  const todoCheckboxSpan = getElement("span", "checkmark");
-  todoCheckboxContainer.append(todoCheckboxInput);
-  todoCheckboxContainer.append(todoCheckboxSpan);
-  todoItemLeft.append(todoCheckboxContainer);
-  todoItem.append(todoItemLeft);
+  const todo = getElement("div", "todo-wrap");
+  const todoCheckboxWrap = getElement("div", "todo-checkbox-wrap");
+  const todoCheckboxContainer = getElement("label", "todo-checkbox-container",);
+  const todoCheckbox = getElement("input", "todo-checkbox");
+  todoCheckbox.setAttribute("type", "checkbox");
+  const todoCheckmark = getElement("span", "checkmark");
+  todoCheckboxContainer.append(todoCheckbox);
+  todoCheckboxContainer.append(todoCheckmark);
+  todoCheckboxWrap.append(todoCheckboxContainer);
+  todo.append(todoCheckboxWrap);
 
-  const todoItemCenter = getElement("div", "todo-center");
-  const todoInput = getElement("div", "todo-center__input");
+
+  const todoInputContainer = getElement("div", "todo-input-container");
+  const todoInput = getElement("div", "todo-input");
   todoInput.textContent = todoText;
-  todoItemCenter.append(todoInput);
-  todoItem.append(todoItemCenter);
+  todoInputContainer.append(todoInput);
+  todo.append(todoInputContainer);
 
-  const todoItemRight = getElement("div", "todo-right");
-  const todoClose = getElement("div", "todo-right__close");
+  const todoCloseContainer = getElement("div", "todo-close-container");
+  const todoClose = getElement("div", "todo-close");
   const todoCloseImage = getElement("div", "close");
   todoCloseImage.addEventListener("click", (event) => {
-    let allElementValue =
-      event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(
-        0,
-      ).firstChild;
-    allElementValue.textContent = `All: ${
-      event.target.parentElement.parentElement.parentElement.parentElement
-        .children.length - 1
-    }`;
-
-    let completedElementValue =
-      event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-        0,
-      ).firstChild;
-    if (
-      event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
-        "completed",
-      ).length -
-        1 <=
-      0
-    ) {
-      completedElementValue.textContent = "Completed: 0";
+    let allElement = event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(0).firstChild;
+    allElement.textContent = `All: ${event.target.parentElement.parentElement.parentElement.parentElement.children.length - 1}`;
+    let completedElement = event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(0).firstChild;
+    if (event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName("completed",).length - 1 <= 0) {
+      completedElement.textContent = "Completed: 0";
     }
-    completedElementValue.textContent = `Completed: ${
-      event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
-        "completed",
-      ).length - 1
-    }`;
+    completedElement.textContent = `Completed: ${event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName("completed",).length - 1}`;
   });
   todoClose.append(todoCloseImage);
-  const todoDate = getElement("div", "todo-right__date");
-  todoDate.textContent = getDate();
-  todoItemRight.append(todoClose);
-  todoItemRight.append(todoDate);
-  todoItem.append(todoItemRight);
-  todoItem.addEventListener("click", (event) => {
+
+  const todoDateContainer = getElement("div", "todo-date-container");
+  todoDateContainer.textContent = getRefactorDate();
+  todoCloseContainer.append(todoClose);
+  todoCloseContainer.append(todoDateContainer);
+  todo.append(todoCloseContainer);
+  todo.addEventListener("click", (event) => {
     if (event.target.className === "close") {
       event.target.parentElement.parentElement.parentElement.remove();
     }
   });
-  todoItem.addEventListener("click", (event) => {
+  todo.addEventListener("click", (event) => {
     if (event.target.className === "checkmark") {
-      event.target.parentElement.parentElement.parentElement.classList.toggle(
-        "completed",
-      );
-      event.target.parentElement.parentElement.parentElement.children[1].classList.toggle(
-        "cross-text",
-      );
-      let allElementValue =
-        event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(
-          1,
-        ).firstChild;
-      allElementValue.textContent = `Completed: ${
-        event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
-          "completed",
-        ).length
-      }`;
+      event.target.parentElement.parentElement.parentElement.classList.toggle("completed",);
+      event.target.parentElement.parentElement.parentElement.children[1].classList.toggle("cross-text",);
+      let completedLabel = event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(1).firstChild;
+      completedLabel.textContent = `Completed: ${event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName("completed",).length}`;
     }
   });
-  return todoItem;
+  return todo;
 }
 
-function getDate() {
+function getRefactorDate() {
   let date = new Date();
   let dateStr =
     ("00" + (date.getMonth() + 1)).slice(-2) +
@@ -211,9 +181,9 @@ function getElement(tagName, className) {
   return element;
 }
 
-function getButton(text) {
+function getButton(buttonTextContent) {
   const button = getElement("a", "button");
-  button.textContent = text;
+  button.textContent = buttonTextContent;
   button.setAttribute("type", "submit");
   button.setAttribute("href", "#");
   return button;
@@ -225,17 +195,14 @@ function getLabel(text) {
   return label;
 }
 
-function updateAllState(event) {
-  let allElementValue =
-    event.target.parentElement.parentElement.children[1].children.item(
-      0,
-    ).firstChild;
-  allElementValue.textContent = `All: ${event.target.parentElement.parentElement.children[2].children.length}`;
-}
-
 function getInput(placeholder, className) {
   const input = getElement("input", className);
   input.setAttribute("type", "text");
   input.setAttribute("placeholder", placeholder);
   return input;
+}
+
+function updateToDoCount(event) {
+  let element = event.target.parentElement.parentElement.children[1].children.item(0).firstChild;
+  element.textContent = `All: ${event.target.parentElement.parentElement.children[2].children.length}`;
 }
