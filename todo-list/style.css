@@ -105,6 +105,13 @@
     display: block;
     margin: 0 auto;
     width: 80%;
+    border: 2px solid black;
+    border-radius: 15px;
+    text-align: center;
+    font-family: "Roboto Light", monospace;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px 0;
 }
 
 .todo-right {
@@ -120,7 +127,14 @@
 }
 
 .todo-right__date {
-    font-size: 18px;
+    font-size: 12px;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 10px 5px;
+    text-align: center;
+    color: black;
+    font-family: "Roboto Light", monospace;
+    font-weight: bold;
 }
 
 .close {
@@ -195,4 +209,23 @@
     border: solid white;
     border-width: 0 3px 3px 0;
     transform: rotate(45deg);
+}
+
+.active {
+    display: none;
+}
+
+.completed {
+    background-color: #9ee2a5;
+    width: 650px;
+    margin: 0 auto 20px;
+    padding: 7px;
+}
+
+.cross-text {
+    text-decoration: line-through;
+}
+
+.search{
+    background-color: #5BEAC8FF;
 }
