@@ -114,13 +114,13 @@
     padding: 10px 0;
 }
 
-.todo-close-container {
+.todo-close-wrap {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
-.todo-close {
+.todo-close-container {
     margin-bottom: 30px;
     border: 2px solid black;
     border-radius: 5px;
@@ -137,28 +137,28 @@
     font-weight: bold;
 }
 
-.close {
+.todo-close {
     width: 20px;
     height: 20px;
     position: relative;
     transform: rotate(45deg);
 }
 
-.close:before, .close:after {
+.todo-close:before, .todo-close:after {
     content: "";
     position: absolute;
     z-index: -1;
     background: black;
 }
 
-.close:before {
+.todo-close:before {
     left: 51%;
     width: 10%;
     margin-left: -8%;
     height: 100%;
 }
 
-.close:after {
+.todo-close:after {
     top: 51%;
     height: 10%;
     margin-top: -8%;
