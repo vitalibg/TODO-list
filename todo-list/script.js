@@ -23,6 +23,7 @@ deleteAllButton.addEventListener("click", (event) => {
     todoList.removeChild(todoList.firstChild);
   }
   updateToDoCount(event);
+  updateCompletedToDoCount(event);
 });
 controlPanel.append(deleteAllButton);
 
@@ -32,6 +33,7 @@ deleteLastButton.addEventListener("click", (event) => {
   const todoList = event.target.parentElement.parentElement.children[2];
   todoList.removeChild(todoList.lastChild);
   updateToDoCount(event);
+  updateCompletedToDoCount(event);
 });
 controlPanel.append(deleteLastButton);
 
@@ -155,7 +157,6 @@ function getToDo(todoText) {
       event.target.parentElement.parentElement.parentElement.parentElement
         .children.length - 1
     }`;
-
     let completedCount =
       event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
         "todo-wrap completed",
@@ -249,9 +250,21 @@ function getInput(placeholder, className) {
 }
 
 function updateToDoCount(event) {
-  let element =
+  const allLabel =
     event.target.parentElement.parentElement.children[1].children.item(
       0,
     ).firstChild;
-  element.textContent = `All: ${event.target.parentElement.parentElement.children[2].children.length}`;
+  allLabel.textContent = `All: ${event.target.parentElement.parentElement.children[2].children.length}`;
+}
+
+function updateCompletedToDoCount(event) {
+  const completedLabel =
+    event.target.parentElement.parentElement.children[1].children.item(
+      1,
+    ).firstChild;
+  completedLabel.textContent = `Completed: ${
+    event.target.parentElement.parentElement.children[2].getElementsByClassName(
+      "completed",
+    ).length
+  }`;
 }
