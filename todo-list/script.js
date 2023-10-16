@@ -184,15 +184,11 @@ function getToDo(todoText, todoData, todoId) {
     const todoList =
       event.target.parentElement.parentElement.parentElement.parentElement
         .children;
-    const todoListLength =
-      event.target.parentElement.parentElement.parentElement.parentElement
-        .children.length;
-
       event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
           0,
       ).textContent = "Completed: " + completedToDoCount;
 
-    for (let i = 0; i < todoListLength; i++) {
+    for (let i = 0; i < todoList.length; i++) {
       if (todoList[i].className.includes("todo-wrap completed")) {
         completedToDoCount++;
       }
@@ -211,9 +207,14 @@ function getToDo(todoText, todoData, todoId) {
   todoCloseWrap.append(todoDateContainer);
   todo.append(todoCloseWrap);
   todo.addEventListener("click", (event) => {
+    const todosList = JSON.parse(localStorage.getItem("todos"));
     if (event.target.className === "todo-close") {
+      const titleDeletedTodo = event.target.parentElement.parentElement.parentElement.children[1].firstChild.textContent
+      todosList.splice(todosList.findIndex(title => title.todoText === titleDeletedTodo), 1)
       event.target.parentElement.parentElement.parentElement.remove();
     }
+    localStorage.clear();
+    localStorage.setItem("todos", JSON.stringify(todosList));
   });
 
   todo.addEventListener("click", (event) => {
@@ -233,15 +234,12 @@ function getToDo(todoText, todoData, todoId) {
       }`;
 
       const completedTodos = [];
-      const todoListLength =
-        event.target.parentElement.parentElement.parentElement.parentElement
-          .children.length;
       const todoList =
         event.target.parentElement.parentElement.parentElement.parentElement
           .children;
       const todosList = JSON.parse(localStorage.getItem("todos"));
 
-      for (let i = 0; i < todoListLength; i++) {
+      for (let i = 0; i < todoList.length; i++) {
         if (todoList[i].className.includes("todo-wrap completed")) {
           completedTodos.push(i);
         }
