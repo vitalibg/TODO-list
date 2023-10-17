@@ -1,6 +1,5 @@
 const TODO_HIGHLIGHT_TIME = 1000;
-
-let todos = localStorage.getItem("todos")
+const todos = localStorage.getItem("todos")
   ? JSON.parse(localStorage.getItem("todos"))
   : [];
 
@@ -67,7 +66,7 @@ infoPanel.append(showAllButton);
 // 'Show completed' button
 const showCompletedButton = getButton("Show Completed");
 showCompletedButton.addEventListener("click", (event) =>
-  showCompletedTodoHandler(event),
+  showCompletedHandler(event),
 );
 infoPanel.append(showCompletedButton);
 
@@ -80,7 +79,81 @@ wrap.append(controlPanel);
 wrap.append(infoPanel);
 wrap.append(todoContainer);
 
-/*Create a new TODO*/
+function deleteAllHandler(event) {
+  const todoList = event.target.parentElement.parentElement.children[2];
+  while (todoList.firstChild) {
+    todoList.removeChild(todoList.firstChild);
+  }
+  localStorage.clear();
+  updateToDoCount(event);
+  updateCompletedToDoCount(event);
+}
+
+function deleteLastHandler(event) {
+  const todoList = event.target.parentElement.parentElement.children[2];
+  todoList.removeChild(todoList.lastChild);
+  let todosList = JSON.parse(localStorage.getItem("todos"));
+  todosList.pop();
+  localStorage.clear();
+  localStorage.setItem("todos", JSON.stringify(todosList));
+  updateToDoCount(event);
+  updateCompletedToDoCount(event);
+}
+
+function addHandler(event) {
+  let todo = getToDo(enterToDoInput.value);
+  todoContainer.append(todo);
+
+  addData(todo, event);
+
+  enterToDoInput.value = "";
+  updateToDoCount(event);
+}
+
+function showAllHandler(event) {
+  const allList = event.target.parentElement.parentElement.children[2].children;
+  for (const todo of allList) {
+    if (
+      todo.className.includes("todo-wrap") ||
+      todo.className.includes("todo-wrap completed")
+    ) {
+      todo.classList.remove("active");
+    }
+  }
+}
+
+function showCompletedHandler(event) {
+  const completedList =
+    event.target.parentElement.parentElement.children[2].children;
+  for (const todo of completedList) {
+    if (
+      todo.className !== "todo-wrap completed" &&
+      todo.className !== "todo-wrap active"
+    ) {
+      todo.classList.add("active");
+    }
+  }
+}
+
+function searchToDoHandler(event) {
+  const searchToDo = event.target.value.toString();
+  if (event.key === "Enter") {
+    const todoList =
+      event.target.parentElement.parentElement.children[2].getElementsByClassName(
+        "todo-input",
+      );
+    for (const todo of todoList) {
+      if (todo.textContent === searchToDo) {
+        todo.parentElement.parentElement.classList.toggle("search");
+        setTimeout(() => {
+          todo.parentElement.parentElement.classList.toggle("search");
+        }, TODO_HIGHLIGHT_TIME);
+      }
+    }
+    event.target.value = "";
+  }
+}
+
 function getToDo(todoText, todoData, todoId) {
   // Checkbox
   const todo = getElement("div", "todo-wrap");
@@ -122,56 +195,10 @@ function getToDo(todoText, todoData, todoId) {
   return todo;
 }
 
-function getRefactorDate() {
-  let date = new Date();
-  return (
-    ("00" + (date.getMonth() + 1)).slice(-2) +
-    "/" +
-    ("00" + date.getDate()).slice(-2) +
-    "/" +
-    date.getFullYear() +
-    " " +
-    ("00" + date.getHours()).slice(-2) +
-    ":" +
-    ("00" + date.getMinutes()).slice(-2) +
-    ":" +
-    ("00" + date.getSeconds()).slice(-2)
-  );
-}
-
-function getElement(tagName, className) {
-  const element = document.createElement(tagName);
-  element.classList.add(className);
-  return element;
-}
-
-function getButton(buttonTextContent) {
-  const button = getElement("a", "button");
-  button.textContent = buttonTextContent;
-  button.setAttribute("type", "submit");
-  button.setAttribute("href", "#");
-  return button;
-}
-
-function getLabel(text) {
-  const label = getElement("label", "label");
-  label.innerText = text;
-  return label;
-}
-
-function getInput(placeholder, className) {
-  const input = getElement("input", className);
-  input.setAttribute("type", "text");
-  input.setAttribute("placeholder", placeholder);
-  return input;
-}
-
 function updateToDoCount(event) {
-  const allLabel =
-    event.target.parentElement.parentElement.children[1].children.item(
-      0,
-    ).firstChild;
-  allLabel.textContent = `All: ${event.target.parentElement.parentElement.children[2].children.length}`;
+  event.target.parentElement.parentElement.children[1].children.item(
+    0,
+  ).firstChild.textContent = `All: ${event.target.parentElement.parentElement.children[2].children.length}`;
 }
 
 function updateCompletedToDoCount(event) {
@@ -286,77 +313,46 @@ function closeTodoUpdateTodoCountHandler(event) {
   ).textContent = "Completed: " + completedToDoCount;
 }
 
-function searchToDoHandler(event) {
-  const searchToDo = event.target.value.toString();
-  if (event.key === "Enter") {
-    const todoList =
-      event.target.parentElement.parentElement.children[2].getElementsByClassName(
-        "todo-input",
-      );
-    for (const todo of todoList) {
-      if (todo.textContent === searchToDo) {
-        todo.parentElement.parentElement.classList.toggle("search");
-        setTimeout(() => {
-          todo.parentElement.parentElement.classList.toggle("search");
-        }, TODO_HIGHLIGHT_TIME);
-      }
-    }
-    event.target.value = "";
-  }
+function getRefactorDate() {
+  let date = new Date();
+  return (
+    ("00" + (date.getMonth() + 1)).slice(-2) +
+    "/" +
+    ("00" + date.getDate()).slice(-2) +
+    "/" +
+    date.getFullYear() +
+    " " +
+    ("00" + date.getHours()).slice(-2) +
+    ":" +
+    ("00" + date.getMinutes()).slice(-2) +
+    ":" +
+    ("00" + date.getSeconds()).slice(-2)
+  );
 }
 
-function showCompletedTodoHandler(event) {
-  const completedList =
-    event.target.parentElement.parentElement.children[2].children;
-  for (const todo of completedList) {
-    if (
-      todo.className !== "todo-wrap completed" &&
-      todo.className !== "todo-wrap active"
-    ) {
-      todo.classList.add("active");
-    }
-  }
+function getElement(tagName, className) {
+  const element = document.createElement(tagName);
+  element.classList.add(className);
+  return element;
 }
 
-function deleteAllHandler(event) {
-  const todoList = event.target.parentElement.parentElement.children[2];
-  while (todoList.firstChild) {
-    todoList.removeChild(todoList.firstChild);
-  }
-  localStorage.clear();
-  updateToDoCount(event);
-  updateCompletedToDoCount(event);
+function getButton(buttonTextContent) {
+  const button = getElement("a", "button");
+  button.textContent = buttonTextContent;
+  button.setAttribute("type", "submit");
+  button.setAttribute("href", "#");
+  return button;
 }
 
-function deleteLastHandler(event) {
-  const todoList = event.target.parentElement.parentElement.children[2];
-  todoList.removeChild(todoList.lastChild);
-  let todosList = JSON.parse(localStorage.getItem("todos"));
-  todosList.pop();
-  localStorage.clear();
-  localStorage.setItem("todos", JSON.stringify(todosList));
-  updateToDoCount(event);
-  updateCompletedToDoCount(event);
+function getLabel(text) {
+  const label = getElement("label", "label");
+  label.innerText = text;
+  return label;
 }
 
-function addHandler(event) {
-  let todo = getToDo(enterToDoInput.value);
-  todoContainer.append(todo);
-
-  addData(todo, event);
-
-  enterToDoInput.value = "";
-  updateToDoCount(event);
-}
-
-function showAllHandler(event) {
-  const allList = event.target.parentElement.parentElement.children[2].children;
-  for (const todo of allList) {
-    if (
-      todo.className.includes("todo-wrap") ||
-      todo.className.includes("todo-wrap completed")
-    ) {
-      todo.classList.remove("active");
-    }
-  }
+function getInput(placeholder, className) {
+  const input = getElement("input", className);
+  input.setAttribute("type", "text");
+  input.setAttribute("placeholder", placeholder);
+  return input;
 }
