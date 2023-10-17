@@ -188,7 +188,8 @@ function refreshInitialState() {
     if (todoItem.todoIsChecked) {
       completedCount++;
       todoContainer.lastChild.classList.toggle("completed");
-      todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("input:checked")
+      // TODO: Add realization of pressed checkbox state after page updating
+      // todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("checked")
     }
     document.querySelector(
       ".completed-label .label",
