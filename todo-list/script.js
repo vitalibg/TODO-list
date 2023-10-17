@@ -21,15 +21,7 @@ controlPanel.classList.add("control-panel");
 
 //'Delete All' button
 const deleteAllButton = getButton(DELETE_ALL_TEXT);
-deleteAllButton.addEventListener("click", (event) => {
-  const todoList = event.target.parentElement.parentElement.children[2];
-  while (todoList.firstChild) {
-    todoList.removeChild(todoList.firstChild);
-  }
-  localStorage.clear();
-  updateToDoCount(event);
-  updateCompletedToDoCount(event);
-});
+deleteAllButton.addEventListener("click", (event) => deleteAllHandler(event));
 controlPanel.append(deleteAllButton);
 
 //'Delete Last' button
@@ -356,4 +348,14 @@ function showCompletedTodoHandler(event) {
       todo.classList.add("active");
     }
   }
+}
+
+function deleteAllHandler(event) {
+  const todoList = event.target.parentElement.parentElement.children[2];
+  while (todoList.firstChild) {
+    todoList.removeChild(todoList.firstChild);
+  }
+  localStorage.clear();
+  updateToDoCount(event);
+  updateCompletedToDoCount(event);
 }
