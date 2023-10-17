@@ -68,7 +68,7 @@
     color: #eeeeee;
 }
 
-.todo-left__checkbox {
+.todo-checkbox {
     width: 20%;
 }
 
@@ -90,73 +90,87 @@
     margin-bottom: 20px;
 }
 
-.todo-left {
+.todo-checkbox-wrap {
     width: 10%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.todo-center {
+.todo-input-container {
     width: 60%;
 }
 
-.todo-center__input {
+.todo-input {
     display: block;
     margin: 0 auto;
     width: 80%;
+    border: 2px solid black;
+    border-radius: 15px;
+    text-align: center;
+    font-family: "Roboto Light", monospace;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 10px 0;
 }
 
-.todo-right {
+.todo-close-wrap {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
 }
 
-.todo-right__close {
+.todo-close-container {
     margin-bottom: 30px;
     border: 2px solid black;
     border-radius: 5px;
 }
 
-.todo-right__date {
-    font-size: 18px;
+.todo-date-container {
+    font-size: 12px;
+    border: 2px solid black;
+    border-radius: 15px;
+    padding: 10px 5px;
+    text-align: center;
+    color: black;
+    font-family: "Roboto Light", monospace;
+    font-weight: bold;
 }
 
-.close {
+.todo-close {
     width: 20px;
     height: 20px;
     position: relative;
     transform: rotate(45deg);
 }
 
-.close:before, .close:after {
+.todo-close:before, .todo-close:after {
     content: "";
     position: absolute;
     z-index: -1;
     background: black;
 }
 
-.close:before {
+.todo-close:before {
     left: 51%;
     width: 10%;
     margin-left: -8%;
     height: 100%;
 }
 
-.close:after {
+.todo-close:after {
     top: 51%;
     height: 10%;
     margin-top: -8%;
     width: 100%;
 }
 
-.todo-left__checkbox-container {
+.todo-checkbox-container {
     position: relative;
     cursor: pointer;
 }
 
-.todo-left__checkbox-container input {
+.todo-checkbox-container input {
     position: absolute;
     opacity: 0;
     height: 0;
@@ -195,4 +209,23 @@
     border: solid white;
     border-width: 0 3px 3px 0;
     transform: rotate(45deg);
+}
+
+.active {
+    display: none;
+}
+
+.completed {
+    background-color: #9ee2a5;
+    width: 650px;
+    margin: 0 auto 20px;
+    padding: 7px;
+}
+
+.cross-text {
+    text-decoration: line-through;
+}
+
+.search {
+    background-color: #5BEAC8FF;
 }
