@@ -106,18 +106,9 @@ infoPanel.append(showAllButton);
 
 // 'Show completed' button
 const showCompletedButton = getButton(SHOW_COMPLETED_TEXT);
-showCompletedButton.addEventListener("click", (event) => {
-  const completedList =
-    event.target.parentElement.parentElement.children[2].children;
-  for (const todo of completedList) {
-    if (
-      todo.className !== "todo-wrap completed" &&
-      todo.className !== "todo-wrap active"
-    ) {
-      todo.classList.add("active");
-    }
-  }
-});
+showCompletedButton.addEventListener("click", (event) =>
+  showCompletedTodoHandler(event),
+);
 infoPanel.append(showCompletedButton);
 
 // 'Search' input field
@@ -351,5 +342,18 @@ function searchToDoHandler(event) {
       }
     }
     event.target.value = "";
+  }
+}
+
+function showCompletedTodoHandler(event) {
+  const completedList =
+    event.target.parentElement.parentElement.children[2].children;
+  for (const todo of completedList) {
+    if (
+      todo.className !== "todo-wrap completed" &&
+      todo.className !== "todo-wrap active"
+    ) {
+      todo.classList.add("active");
+    }
   }
 }
