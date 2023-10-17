@@ -48,15 +48,7 @@ todos.forEach((todoItem) => {
   }
 });
 
-addButton.addEventListener("click", (event) => {
-  let todo = getToDo(enterToDoInput.value);
-  todoContainer.append(todo);
-
-  addData(todo, event);
-
-  enterToDoInput.value = "";
-  updateToDoCount(event);
-});
+addButton.addEventListener("click", (event) => addHandler(event));
 controlPanel.append(addButton);
 
 const infoPanel = getElement("div", "info-panel");
@@ -360,4 +352,14 @@ function deleteLastHandler(event) {
   localStorage.setItem("todos", JSON.stringify(todosList));
   updateToDoCount(event);
   updateCompletedToDoCount(event);
+}
+
+function addHandler(event) {
+  let todo = getToDo(enterToDoInput.value);
+  todoContainer.append(todo);
+
+  addData(todo, event);
+
+  enterToDoInput.value = "";
+  updateToDoCount(event);
 }
