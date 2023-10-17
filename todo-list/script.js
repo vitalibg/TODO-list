@@ -66,17 +66,7 @@ infoPanel.append(completedLabel);
 
 // 'Show All' button
 const showAllButton = getButton(SHOW_ALL_TEXT);
-showAllButton.addEventListener("click", (event) => {
-  const allList = event.target.parentElement.parentElement.children[2].children;
-  for (const todo of allList) {
-    if (
-      todo.className.includes("todo-wrap") ||
-      todo.className.includes("todo-wrap completed")
-    ) {
-      todo.classList.remove("active");
-    }
-  }
-});
+showAllButton.addEventListener("click", (event) => showAllHandler(event));
 infoPanel.append(showAllButton);
 
 // 'Show completed' button
@@ -362,4 +352,16 @@ function addHandler(event) {
 
   enterToDoInput.value = "";
   updateToDoCount(event);
+}
+
+function showAllHandler(event) {
+  const allList = event.target.parentElement.parentElement.children[2].children;
+  for (const todo of allList) {
+    if (
+      todo.className.includes("todo-wrap") ||
+      todo.className.includes("todo-wrap completed")
+    ) {
+      todo.classList.remove("active");
+    }
+  }
 }
