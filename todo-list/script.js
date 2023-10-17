@@ -123,25 +123,7 @@ infoPanel.append(showCompletedButton);
 // 'Search' input field
 const searchInput = getInput("Search ...", "input");
 searchInput.classList.add("search-todo");
-searchInput.addEventListener("keypress", (event) => {
-  const searchToDo = event.target.value.toString();
-  if (event.key === "Enter") {
-    const todoList =
-      event.target.parentElement.parentElement.children[2].getElementsByClassName(
-        "todo-input",
-      );
-    for (const todo of todoList) {
-      if (todo.textContent === searchToDo) {
-        todo.parentElement.parentElement.classList.toggle("search");
-        setTimeout(() => {
-          todo.parentElement.parentElement.classList.toggle("search");
-        }, TODO_HIGHLIGHT_TIME);
-      }
-    }
-    event.target.value = "";
-  }
-});
-
+searchInput.addEventListener("keypress", (event) => searchToDoHandler(event));
 infoPanel.append(searchInput);
 wrap.append(controlPanel);
 wrap.append(infoPanel);
@@ -351,4 +333,23 @@ function closeTodoUpdateTodoCountHandler(event) {
   event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
     0,
   ).textContent = "Completed: " + completedToDoCount;
+}
+
+function searchToDoHandler(event) {
+  const searchToDo = event.target.value.toString();
+  if (event.key === "Enter") {
+    const todoList =
+      event.target.parentElement.parentElement.children[2].getElementsByClassName(
+        "todo-input",
+      );
+    for (const todo of todoList) {
+      if (todo.textContent === searchToDo) {
+        todo.parentElement.parentElement.classList.toggle("search");
+        setTimeout(() => {
+          todo.parentElement.parentElement.classList.toggle("search");
+        }, TODO_HIGHLIGHT_TIME);
+      }
+    }
+    event.target.value = "";
+  }
 }
