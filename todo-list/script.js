@@ -183,14 +183,17 @@ function searchToDoHandler(event) {
 }
 
 function refreshInitialState() {
+  let completedCount = 0;
   todos.forEach((todoItem) => {
     todoContainer.append(
       getToDo(todoItem.todoText, todoItem.todoData, todoItem.todoId),
     );
     if (todoItem.todoIsChecked) {
+      completedCount++;
       todoContainer.lastChild.classList.toggle("completed");
       // todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("input:checked")
     }
+    document.querySelector(".completed-label .label").textContent = `Completed: ${completedCount}`;
   });
 }
 
@@ -202,9 +205,8 @@ function getToDo(todoText, todoData, todoId) {
   const todoCheckboxContainer = getElement("label", "todo-checkbox-container");
   const todoCheckbox = getElement("input", "todo-checkbox");
   todoCheckbox.setAttribute("type", "checkbox");
-  const todoCheckmark = getElement("span", "checkmark");
   todoCheckboxContainer.append(todoCheckbox);
-  todoCheckboxContainer.append(todoCheckmark);
+  todoCheckboxContainer.append(getElement("span", "checkmark"));
   todoCheckboxWrap.append(todoCheckboxContainer);
   todo.append(todoCheckboxWrap);
 
@@ -218,11 +220,7 @@ function getToDo(todoText, todoData, todoId) {
   // Close
   const todoCloseWrap = getElement("div", "todo-close-wrap");
   const todoCloseContainer = getElement("div", "todo-close-container");
-  const todoClose = getElement("div", "todo-close");
-  todoClose.addEventListener("click", (event) =>
-    closeTodoUpdateTodoCountHandler(event),
-  );
-  todoCloseContainer.append(todoClose);
+  todoCloseContainer.append(getElement("div", "todo-close"));
   todoCloseWrap.append(todoCloseContainer);
 
   // Date
@@ -237,15 +235,29 @@ function getToDo(todoText, todoData, todoId) {
 
 function closeTodoHandler(event) {
   const todosList = JSON.parse(localStorage.getItem("todos"));
+  let completedCount = 0;
   if (event.target.className === "todo-close") {
     const titleDeletedTodo =
       event.target.parentElement.parentElement.parentElement.children[1]
         .firstChild.textContent;
+    document.querySelector(".all-label .label").textContent = `All: ${
+      event.target.parentElement.parentElement.parentElement.parentElement
+        .children.length - 1
+    }`;
     todosList.splice(
       todosList.findIndex((title) => title.todoText === titleDeletedTodo),
       1,
     );
     event.target.parentElement.parentElement.parentElement.remove();
+    const completedTodoCount = document.getElementsByClassName("todo-wrap");
+    for (let i = 0; i < completedTodoCount.length; i++) {
+      if (completedTodoCount[i].className.includes("todo-wrap completed")) {
+        completedCount++;
+      }
+    }
+    document.querySelector(
+      ".completed-label .label",
+    ).textContent = `Completed: ${completedCount}`;
   }
   localStorage.clear();
   localStorage.setItem("todos", JSON.stringify(todosList));
@@ -294,31 +306,6 @@ function completeTodoHandler(event) {
     localStorage.clear();
     localStorage.setItem("todos", JSON.stringify(todosList));
   }
-}
-
-function closeTodoUpdateTodoCountHandler(event) {
-  let completedToDoCount = 0;
-  event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(
-    0,
-  ).firstChild.textContent = `All: ${
-    event.target.parentElement.parentElement.parentElement.parentElement
-      .children.length - 1
-  }`;
-  const todoList =
-    event.target.parentElement.parentElement.parentElement.parentElement
-      .children;
-  event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-    0,
-  ).textContent = "Completed: " + completedToDoCount;
-
-  for (let i = 0; i < todoList.length; i++) {
-    if (todoList[i].className.includes("todo-wrap completed")) {
-      completedToDoCount++;
-    }
-  }
-  event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-    0,
-  ).textContent = "Completed: " + completedToDoCount;
 }
 
 function getRefactorDate() {
