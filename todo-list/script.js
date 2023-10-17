@@ -56,7 +56,9 @@ const addButton = getButton(ADD_TEXT);
 
 const todoContainer = getElement("div", "todo-container");
 todos.forEach((todoItem) => {
-  todoContainer.append(getToDo(todoItem.todoText, todoItem.todoData, todoItem.todoId));
+  todoContainer.append(
+    getToDo(todoItem.todoText, todoItem.todoData, todoItem.todoId),
+  );
   if (todoItem.todoIsChecked) {
     todoContainer.lastChild.classList.toggle("completed");
     // todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("input:checked")
@@ -171,31 +173,9 @@ function getToDo(todoText, todoData, todoId) {
   const todoCloseWrap = getElement("div", "todo-close-wrap");
   const todoCloseContainer = getElement("div", "todo-close-container");
   const todoClose = getElement("div", "todo-close");
-  todoClose.addEventListener("click", (event) => {
-    let completedToDoCount = 0;
-    event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(
-      0,
-    ).firstChild.textContent = `All: ${
-      event.target.parentElement.parentElement.parentElement.parentElement
-        .children.length - 1
-    }`;
-    const todoList =
-      event.target.parentElement.parentElement.parentElement.parentElement
-        .children;
-    event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-      0,
-    ).textContent = "Completed: " + completedToDoCount;
-
-    for (let i = 0; i < todoList.length; i++) {
-      if (todoList[i].className.includes("todo-wrap completed")) {
-        completedToDoCount++;
-      }
-    }
-    event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-      0,
-    ).textContent = "Completed: " + completedToDoCount;
-  });
-
+  todoClose.addEventListener("click", (event) =>
+    closeTodoUpdateTodoCountHandler(event),
+  );
   todoCloseContainer.append(todoClose);
   todoCloseWrap.append(todoCloseContainer);
 
@@ -291,11 +271,11 @@ function closeTodoHandler(event) {
   const todosList = JSON.parse(localStorage.getItem("todos"));
   if (event.target.className === "todo-close") {
     const titleDeletedTodo =
-        event.target.parentElement.parentElement.parentElement.children[1]
-            .firstChild.textContent;
+      event.target.parentElement.parentElement.parentElement.children[1]
+        .firstChild.textContent;
     todosList.splice(
-        todosList.findIndex((title) => title.todoText === titleDeletedTodo),
-        1,
+      todosList.findIndex((title) => title.todoText === titleDeletedTodo),
+      1,
     );
     event.target.parentElement.parentElement.parentElement.remove();
   }
@@ -306,23 +286,23 @@ function closeTodoHandler(event) {
 function completeTodoHandler(event) {
   if (event.target.className === "checkmark") {
     event.target.parentElement.parentElement.parentElement.classList.toggle(
-        "completed",
+      "completed",
     );
     event.target.parentElement.parentElement.parentElement.children[1].classList.toggle(
-        "cross-text",
+      "cross-text",
     );
     event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(
-        1,
+      1,
     ).firstChild.textContent = `Completed: ${
-        event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
-            "completed",
-        ).length
+      event.target.parentElement.parentElement.parentElement.parentElement.getElementsByClassName(
+        "completed",
+      ).length
     }`;
 
     const completedTodos = [];
     const todoList =
-        event.target.parentElement.parentElement.parentElement.parentElement
-            .children;
+      event.target.parentElement.parentElement.parentElement.parentElement
+        .children;
     const todosList = JSON.parse(localStorage.getItem("todos"));
 
     for (let i = 0; i < todoList.length; i++) {
@@ -346,4 +326,29 @@ function completeTodoHandler(event) {
     localStorage.clear();
     localStorage.setItem("todos", JSON.stringify(todosList));
   }
+}
+
+function closeTodoUpdateTodoCountHandler(event) {
+  let completedToDoCount = 0;
+  event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children.item(
+    0,
+  ).firstChild.textContent = `All: ${
+    event.target.parentElement.parentElement.parentElement.parentElement
+      .children.length - 1
+  }`;
+  const todoList =
+    event.target.parentElement.parentElement.parentElement.parentElement
+      .children;
+  event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
+    0,
+  ).textContent = "Completed: " + completedToDoCount;
+
+  for (let i = 0; i < todoList.length; i++) {
+    if (todoList[i].className.includes("todo-wrap completed")) {
+      completedToDoCount++;
+    }
+  }
+  event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
+    0,
+  ).textContent = "Completed: " + completedToDoCount;
 }
