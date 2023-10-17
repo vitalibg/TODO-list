@@ -1,8 +1,3 @@
-const DELETE_ALL_TEXT = "Delete All";
-const DELETE_LAST_TEXT = "Delete Last";
-const ADD_TEXT = "Add";
-const SHOW_ALL_TEXT = "Show All";
-const SHOW_COMPLETED_TEXT = "Show Completed";
 const TODO_HIGHLIGHT_TIME = 1000;
 
 let todos = localStorage.getItem("todos")
@@ -20,12 +15,12 @@ const controlPanel = getElement("div", "panel");
 controlPanel.classList.add("control-panel");
 
 //'Delete All' button
-const deleteAllButton = getButton(DELETE_ALL_TEXT);
+const deleteAllButton = getButton("Delete All");
 deleteAllButton.addEventListener("click", (event) => deleteAllHandler(event));
 controlPanel.append(deleteAllButton);
 
 //'Delete Last' button
-const deleteLastButton = getButton(DELETE_LAST_TEXT);
+const deleteLastButton = getButton("Delete Last");
 deleteLastButton.addEventListener("click", (event) => deleteLastHandler(event));
 controlPanel.append(deleteLastButton);
 
@@ -35,7 +30,7 @@ enterToDoInput.classList.add("enter-todo");
 controlPanel.append(enterToDoInput);
 
 //'Add' button*
-const addButton = getButton(ADD_TEXT);
+const addButton = getButton("Add");
 
 const todoContainer = getElement("div", "todo-container");
 todos.forEach((todoItem) => {
@@ -65,12 +60,12 @@ completedLabel.append(getLabel("Completed: 0"));
 infoPanel.append(completedLabel);
 
 // 'Show All' button
-const showAllButton = getButton(SHOW_ALL_TEXT);
+const showAllButton = getButton("Show All");
 showAllButton.addEventListener("click", (event) => showAllHandler(event));
 infoPanel.append(showAllButton);
 
 // 'Show completed' button
-const showCompletedButton = getButton(SHOW_COMPLETED_TEXT);
+const showCompletedButton = getButton("Show Completed");
 showCompletedButton.addEventListener("click", (event) =>
   showCompletedTodoHandler(event),
 );
