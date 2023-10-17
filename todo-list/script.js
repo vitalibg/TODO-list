@@ -56,12 +56,10 @@ const addButton = getButton(ADD_TEXT);
 
 const todoContainer = getElement("div", "todo-container");
 todos.forEach((todoItem) => {
-  todoContainer.append(
-    getToDo(todoItem.todoText, todoItem.todoData, todoItem.todoId),
-  );
+  todoContainer.append(getToDo(todoItem.todoText, todoItem.todoData, todoItem.todoId));
   if (todoItem.todoIsChecked) {
     todoContainer.lastChild.classList.toggle("completed");
-    // todoContainer.lastChild.childNodes[0].childNodes[0].lastChild.parentElement.classList.toggle("checkmark:after")
+    // todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("input:checked")
   }
 });
 
@@ -184,9 +182,9 @@ function getToDo(todoText, todoData, todoId) {
     const todoList =
       event.target.parentElement.parentElement.parentElement.parentElement
         .children;
-      event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
-          0,
-      ).textContent = "Completed: " + completedToDoCount;
+    event.target.parentElement.parentElement.parentElement.parentElement.parentElement.children[1].children[1].children.item(
+      0,
+    ).textContent = "Completed: " + completedToDoCount;
 
     for (let i = 0; i < todoList.length; i++) {
       if (todoList[i].className.includes("todo-wrap completed")) {
@@ -206,16 +204,7 @@ function getToDo(todoText, todoData, todoId) {
   todoDateContainer.textContent = todoData || getRefactorDate();
   todoCloseWrap.append(todoDateContainer);
   todo.append(todoCloseWrap);
-  todo.addEventListener("click", (event) => {
-    const todosList = JSON.parse(localStorage.getItem("todos"));
-    if (event.target.className === "todo-close") {
-      const titleDeletedTodo = event.target.parentElement.parentElement.parentElement.children[1].firstChild.textContent
-      todosList.splice(todosList.findIndex(title => title.todoText === titleDeletedTodo), 1)
-      event.target.parentElement.parentElement.parentElement.remove();
-    }
-    localStorage.clear();
-    localStorage.setItem("todos", JSON.stringify(todosList));
-  });
+  todo.addEventListener("click", (event) => closeTodoHandler(event));
 
   todo.addEventListener("click", (event) => {
     if (event.target.className === "checkmark") {
@@ -317,11 +306,9 @@ function updateToDoCount(event) {
 }
 
 function updateCompletedToDoCount(event) {
-  const completedLabel =
-    event.target.parentElement.parentElement.children[1].children.item(
-      1,
-    ).firstChild;
-  completedLabel.textContent = `Completed: ${
+  event.target.parentElement.parentElement.children[1].children.item(
+    1,
+  ).firstChild.textContent = `Completed: ${
     event.target.parentElement.parentElement.children[2].getElementsByClassName(
       "completed",
     ).length
@@ -342,4 +329,20 @@ function addData(todo, event) {
     todoIsChecked,
   });
   localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+function closeTodoHandler(event) {
+  const todosList = JSON.parse(localStorage.getItem("todos"));
+  if (event.target.className === "todo-close") {
+    const titleDeletedTodo =
+        event.target.parentElement.parentElement.parentElement.children[1]
+            .firstChild.textContent;
+    todosList.splice(
+        todosList.findIndex((title) => title.todoText === titleDeletedTodo),
+        1,
+    );
+    event.target.parentElement.parentElement.parentElement.remove();
+  }
+  localStorage.clear();
+  localStorage.setItem("todos", JSON.stringify(todosList));
 }
