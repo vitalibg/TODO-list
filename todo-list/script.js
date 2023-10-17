@@ -26,16 +26,7 @@ controlPanel.append(deleteAllButton);
 
 //'Delete Last' button
 const deleteLastButton = getButton(DELETE_LAST_TEXT);
-deleteLastButton.addEventListener("click", (event) => {
-  const todoList = event.target.parentElement.parentElement.children[2];
-  todoList.removeChild(todoList.lastChild);
-  let todosList = JSON.parse(localStorage.getItem("todos"));
-  todosList.pop();
-  localStorage.clear();
-  localStorage.setItem("todos", JSON.stringify(todosList));
-  updateToDoCount(event);
-  updateCompletedToDoCount(event);
-});
+deleteLastButton.addEventListener("click", (event) => deleteLastHandler(event));
 controlPanel.append(deleteLastButton);
 
 //'EnterTodo' input field
@@ -356,6 +347,17 @@ function deleteAllHandler(event) {
     todoList.removeChild(todoList.firstChild);
   }
   localStorage.clear();
+  updateToDoCount(event);
+  updateCompletedToDoCount(event);
+}
+
+function deleteLastHandler(event) {
+  const todoList = event.target.parentElement.parentElement.children[2];
+  todoList.removeChild(todoList.lastChild);
+  let todosList = JSON.parse(localStorage.getItem("todos"));
+  todosList.pop();
+  localStorage.clear();
+  localStorage.setItem("todos", JSON.stringify(todosList));
   updateToDoCount(event);
   updateCompletedToDoCount(event);
 }
