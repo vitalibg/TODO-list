@@ -1,9 +1,8 @@
 const TODO_HIGHLIGHT_TIME = 1000;
-const todos = localStorage.getItem("todos")
-  ? JSON.parse(localStorage.getItem("todos"))
-  : [];
+const todos = getTodoList();
 
 const wrap = appInitializing();
+
 const controlPanel = getControlPanel();
 const infoPanel = getInfoPanel();
 const todoContainer = getElement("div", "todo-container");
@@ -75,7 +74,7 @@ function getDeleteLastButton() {
 function deleteLastHandler(event) {
   const todoList = event.target.parentElement.parentElement.children[2];
   todoList.removeChild(todoList.lastChild);
-  let todosList = JSON.parse(localStorage.getItem("todos"));
+  let todosList = getTodoList();
   todosList.pop();
   localStorage.clear();
   localStorage.setItem("todos", JSON.stringify(todosList));
@@ -98,9 +97,7 @@ function getAddButton() {
 function addHandler(event) {
   let todo = getToDo(enterToDoInputField.value);
   todoContainer.append(todo);
-
   addData(todo, event);
-
   enterToDoInputField.value = "";
   updateToDoCount(event);
 }
@@ -191,9 +188,11 @@ function refreshInitialState() {
     if (todoItem.todoIsChecked) {
       completedCount++;
       todoContainer.lastChild.classList.toggle("completed");
-      // todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("input:checked")
+      todoContainer.lastElementChild.firstElementChild.firstElementChild.lastElementChild.classList.toggle("input:checked")
     }
-    document.querySelector(".completed-label .label").textContent = `Completed: ${completedCount}`;
+    document.querySelector(
+      ".completed-label .label",
+    ).textContent = `Completed: ${completedCount}`;
   });
 }
 
@@ -348,6 +347,8 @@ function addData(todo, event) {
   const todoData = lastChild.childNodes[2].childNodes[1].textContent;
   const todoText = lastChild.childNodes[1].firstChild.textContent;
   const todoIsChecked = false;
+  const todos = getTodoList();
+
   todos.push({
     todoId,
     todoData,
@@ -382,4 +383,10 @@ function getInput(placeholder, className) {
   input.setAttribute("type", "text");
   input.setAttribute("placeholder", placeholder);
   return input;
+}
+
+function getTodoList() {
+  return localStorage.getItem("todos")
+    ? JSON.parse(localStorage.getItem("todos"))
+    : [];
 }
