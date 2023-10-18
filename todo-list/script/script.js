@@ -1,3 +1,12 @@
+import {
+  getButton,
+  getElement,
+  getInput,
+  getLabel,
+  getRefactorDate,
+  getTodoList,
+} from "./utils.js";
+
 const TODO_HIGHLIGHT_TIME = 1000;
 const todos = getTodoList();
 
@@ -308,23 +317,6 @@ function completeTodoHandler(event) {
   }
 }
 
-function getRefactorDate() {
-  let date = new Date();
-  return (
-    ("00" + (date.getMonth() + 1)).slice(-2) +
-    "/" +
-    ("00" + date.getDate()).slice(-2) +
-    "/" +
-    date.getFullYear() +
-    " " +
-    ("00" + date.getHours()).slice(-2) +
-    ":" +
-    ("00" + date.getMinutes()).slice(-2) +
-    ":" +
-    ("00" + date.getSeconds()).slice(-2)
-  );
-}
-
 function updateToDoCount(event) {
   event.target.parentElement.parentElement.children[1].children.item(
     0,
@@ -357,37 +349,4 @@ function addData(todo, event) {
     todoIsChecked,
   });
   localStorage.setItem("todos", JSON.stringify(todos));
-}
-
-function getElement(tagName, className) {
-  const element = document.createElement(tagName);
-  element.classList.add(className);
-  return element;
-}
-
-function getButton(buttonTextContent) {
-  const button = getElement("a", "button");
-  button.textContent = buttonTextContent;
-  button.setAttribute("type", "submit");
-  button.setAttribute("href", "#");
-  return button;
-}
-
-function getLabel(text) {
-  const label = getElement("label", "label");
-  label.innerText = text;
-  return label;
-}
-
-function getInput(placeholder, className) {
-  const input = getElement("input", className);
-  input.setAttribute("type", "text");
-  input.setAttribute("placeholder", placeholder);
-  return input;
-}
-
-function getTodoList() {
-  return localStorage.getItem("todos")
-    ? JSON.parse(localStorage.getItem("todos"))
-    : [];
 }
